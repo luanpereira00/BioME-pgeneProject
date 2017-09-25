@@ -71,21 +71,19 @@ def compareMotif(motif, matrixMotif):
 		motifValue+=getLetterValue(motif[i], row(matrixMotif, i))
 	return motifValue
 
-def findAndCompareMotif(sequence, matrixMotif, k_Matx):
+def findAndCompareMotif(sequence, k_Seq, matrixMotif, k_Matx):
 	motif = ''
-	toOut=''
 	#Finding Motif
 	for i in range(0, len(sequence)-len(matrixMotif)+1):	
 		motif = sequence[i : i+len(matrixMotif)]
 		aux=compareMotif(motif, matrixMotif)
 			
 		if aux >= p_value[k_Matx]: 
-			toOut+=str(aux)+'; '
-			print(aux)
-			print('>=')
-			print(p_value[k_Matx])
+			out = open('out.txt', 'a')
+			out.write(k_Seq+' '+k_Matx+' '+p_value[k_Matx]+' '+motif+' '+aux+'\n')
+			out.close()
 		motif='' #Cleaning Motif
-	return toOut
+
 
 
 #Funcao principal
@@ -94,18 +92,12 @@ if __name__ == '__main__':
 	readMatrix("./matrixMotif/pwms_HUMAN_mono.txt")
 	i=1
 	out = open('out.txt', 'w')
+	out.write('GENE PWM THRESESHOLD MOTIF SCORE\n')
+	out.close()
 	for k_Seq,v_Seq in listOfSeq.items():
 		print(str(i)+' '+str(k_Seq))
 		i+=1
 		for k_Matx,v_Matx in matrix.items():
-			motif = findAndCompareMotif(v_Seq, v_Matx, k_Matx)
-			if motif != '':
-				out.write(' > '+k_Matx+' > '+motif[:-2])
-				out.write('\n')
-			
-	out.close()			
-	
-
-
-
+			findAndCompareMotif(v_Seq, k_Seq, v_Matx, k_Matx)
+					
 	#printListOfSeq()
